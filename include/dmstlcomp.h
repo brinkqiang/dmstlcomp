@@ -5,6 +5,7 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include <iostream>
 
 template<class V, class T>
 struct comp_equal
