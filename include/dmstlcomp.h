@@ -6,13 +6,14 @@
 #include <iterator>
 #include <algorithm>
 #include <iostream>
+#include <utility>
 
 template<class V, class T>
 struct comp_equal
 {
     typedef T op_type;
-    comp_equal(V T::*fun){m_fun=fun;}
-    V T::*m_fun;
+    comp_equal(V T::* fun){ m_fun = fun; }
+    V T::* m_fun;
     bool operator()(T& left, T& right)
     {
         return left.*m_fun == right.*m_fun;
@@ -23,8 +24,8 @@ template<class V, class T>
 struct comp_equal_func
 {
     typedef T op_type;
-    comp_equal_func(V (T::*fun)()){m_fun=fun;}
-    V (T::*m_fun)();
+    comp_equal_func(V(T::* fun)()){ m_fun = fun; }
+    V(T::* m_fun)();
     bool operator()(T& left, T& right)
     {
         return (left.*m_fun)() == (right.*m_fun)();
@@ -35,8 +36,8 @@ template<class V, class T>
 struct comp_less
 {
     typedef T op_type;
-    comp_less(V T::*fun){m_fun=fun;}
-    V T::*m_fun;
+    comp_less(V T::* fun){ m_fun = fun; }
+    V T::* m_fun;
     bool operator()(T& left, T& right)
     {
         return left.*m_fun < right.*m_fun;
@@ -47,8 +48,8 @@ template<class V, class T>
 struct comp_less_func
 {
     typedef T op_type;
-    comp_less_func(V (T::*fun)()){m_fun=fun;}
-    V (T::*m_fun)();
+    comp_less_func(V(T::* fun)()){ m_fun = fun; }
+    V(T::* m_fun)();
     bool operator()(T& left, T& right)
     {
         return (left.*m_fun)() < (right.*m_fun)();
@@ -59,8 +60,8 @@ template<class V, class T>
 struct comp_greater
 {
     typedef T op_type;
-    comp_greater(V T::*fun){m_fun=fun;}
-    V T::*m_fun;
+    comp_greater(V T::* fun){ m_fun = fun; }
+    V T::* m_fun;
     bool operator()(const T& left, const T& right)
     {
         return left.*m_fun > right.*m_fun;
@@ -71,8 +72,8 @@ template<class V, class T>
 struct comp_greater_func
 {
     typedef T op_type;
-    comp_greater_func(V (T::*fun)()){m_fun=fun;}
-    V (T::*m_fun)();
+    comp_greater_func(V(T::* fun)()){ m_fun = fun; }
+    V(T::* m_fun)();
     bool operator()(T& left, T& right)
     {
         return (left.*m_fun)() > (right.*m_fun)();
@@ -88,18 +89,18 @@ struct combine_comp_f
     {
     }
 
-    bool operator()(op_type &left, op_type &right)
+    bool operator()(op_type& left, op_type& right)
     {
-        if (!m_c1(left,right) && !m_c1(right,left))
-          return m_c2(left,right);
-        return m_c1(left,right);
+        if (!m_c1(left, right) && !m_c1(right, left))
+            return m_c2(left, right);
+        return m_c1(left, right);
     }
 
     bool operator()(op_type* left_ptr, op_type* right_ptr)
     {
-        if (!m_c1(*left_ptr,*right_ptr) && !m_c1(*right_ptr,*left_ptr))
-          return m_c2(*left_ptr,*right_ptr);
-        return m_c1(*left_ptr,*right_ptr);
+        if (!m_c1(*left_ptr, *right_ptr) && !m_c1(*right_ptr, *left_ptr))
+            return m_c2(*left_ptr, *right_ptr);
+        return m_c1(*left_ptr, *right_ptr);
     }
 
     comp1 m_c1;
@@ -107,52 +108,55 @@ struct combine_comp_f
 };
 
 template<class V, class T>
-comp_equal<V,T> create_comp_equal(V T::*fun)
+comp_equal<V, T> create_comp_equal(V T::* fun)
 {
-    return comp_equal<V,T>(fun);
+    return comp_equal<V, T>(fun);
 }
 
 template<class V, class T>
-comp_equal_func<V,T> create_comp_equal(V (T::*fun)())
+comp_equal_func<V, T> create_comp_equal(V(T::* fun)())
 {
-    return comp_equal_func<V,T>(fun);
+    return comp_equal_func<V, T>(fun);
 }
 
 template<class V, class T>
-comp_less<V,T> create_comp_less(V T::*fun)
+comp_less<V, T> create_comp_less(V T::* fun)
 {
-    return comp_less<V,T>(fun);
+    return comp_less<V, T>(fun);
 }
 
 template<class V, class T>
-comp_less_func<V,T> create_comp_less(V (T::*fun)())
+comp_less_func<V, T> create_comp_less(V(T::* fun)())
 {
-    return comp_less_func<V,T>(fun);
+    return comp_less_func<V, T>(fun);
 }
 
 template<class V, class T>
-comp_greater<V,T> create_comp_greater(V T::*fun)
+comp_greater<V, T> create_comp_greater(V T::* fun)
 {
-    return comp_greater<V,T>(fun);
+    return comp_greater<V, T>(fun);
 }
 
 template<class V, class T>
-comp_greater_func<V,T> create_comp_greater(V (T::*fun)())
+comp_greater_func<V, T> create_comp_greater(V(T::* fun)())
 {
-    return comp_greater_func<V,T>(fun);
+    return comp_greater_func<V, T>(fun);
 }
 
 template<class C1, class C2>
 combine_comp_f<C1, C2> combine_comp(C1 c1, C2 c2)
 {
-    return combine_comp_f<C1,C2>(c1, c2);
+    return combine_comp_f<C1, C2>(c1, c2);
 }
 
 template<class container>
 void
 print_container(const container& c)
 {
-    std::copy(c.begin(), c.end(), std::ostream_iterator<typename container::value_type>(std::cout, std::endl));
+    for (auto it : c)
+    {
+        std::cout << it << std::endl;
+    }
 }
 
 #define PP_COMBINECOMP_LESS_V0                                           combine_comp
@@ -218,4 +222,3 @@ print_container(const container& c)
 //    return (0);
 //}
 #endif // __UTILCOMP_H_INCLUDE__
-
