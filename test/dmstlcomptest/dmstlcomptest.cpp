@@ -60,7 +60,6 @@ int main(int argc, char* argv[])
 
     print(vecABC);
 
-    std::ranges::sort(vecABC, {}, &SData::nData);
     std::sort(vecABC.begin(), vecABC.end(), PP_COMBINECOMP_GREATER_V2(&SData::nData, &SData::GetID));
 
     print(vecABC);
